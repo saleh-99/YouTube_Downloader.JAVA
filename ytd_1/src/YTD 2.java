@@ -1,4 +1,5 @@
 
+
 import static org.openqa.selenium.support.ui.ExpectedConditions.presenceOfElementLocated;
 
 import java.awt.Color;
@@ -43,7 +44,7 @@ public class YTD {
 	private JPanel contentPane;
 	private JList<String> con;
 	DefaultListModel<String> demoList;
-	private JTextArea song_list;
+	private JTextArea songl;
 	private JTextArea textArea;
 
 	public static <V> void main(String[] args) {
@@ -54,30 +55,39 @@ public class YTD {
 	public YTD() {
 		System.setProperty("webdriver.chrome.driver", "/Users/salehahmed/Downloads/chromedriver");
 		ChromeOptions options = new ChromeOptions();
-		// options.addArguments("--headless");
+		//options.addArguments("--headless");
 
 		driver = new ChromeDriver();
 		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
 		wait = new WebDriverWait(driver, 10);
+		
+		tt();
 
-		setup_frame();
+		/*
+		 * Scanner s; try { s = new Scanner(new
+		 * File("/Users/salehahmed/Desktop/text.txt"));
+		 * 
+		 * while (s.hasNext()) {
+		 * 
+		 * String name = s.nextLine();
+		 * 
+		 * songl.setText(songl.getText()+" \n" +name);
+		 * 
+		 * } s.close(); } catch (FileNotFoundException e) { // TODO Auto-generated catch
+		 * block
+		 * 
+		 * }
+		 */
 
 	}
 
-	public void setup_frame() {
+	public void tt() {
 		frm = new JFrame();
 		frm.setVisible(true);
 		frm.setBackground(Color.GRAY);
+
 		frm.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		frm.setBounds(100, 100, 450, 300);
-		
-		contentPane = new JPanel();
-		contentPane.setBackground(Color.GRAY);
-		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
-		contentPane.setLayout(null);
-		frm.setContentPane(contentPane);
-		
-		frm.addWindowListener(new java.awt.event.WindowAdapter() { // exit the app 
+		frm.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 				if (JOptionPane.showConfirmDialog(frm, "Are you sure you want to close this window?", "Close Window?",
@@ -87,27 +97,32 @@ public class YTD {
 				}
 			}
 		});
-		
+		frm.setBounds(100, 100, 450, 300);
+		contentPane = new JPanel();
+		contentPane.setBackground(Color.GRAY);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setLayout(null);
+		frm.setContentPane(contentPane);
+
 		JButton btn = new JButton("search");
 		btn.setBounds(333, 243, 117, 29);
 		contentPane.add(btn);
-		
 		btn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (song_list.getText() != "") {
-					new Thread(new Runnable() {
-						@Override
-						public void run() {
-							for (String name : song_list.getText().split("\\n")) {
+				if(songl.getText()!="") {
+				new Thread(new Runnable() {
+				     @Override
+				     public void run() {
+				    		for (String name : songl.getText().split("\\n")) {
 
-								if (download_video(driver, wait, name)) {
+								if (dd(driver, wait, name)) {
 									demoList.addElement(name);
 								}
-
+								
 							}
-						}
-					}).start();
+				     }
+				}).start();
 				}
 			}
 		});
@@ -116,9 +131,9 @@ public class YTD {
 		scrollPane.setBounds(6, 6, 200, 188);
 		contentPane.add(scrollPane);
 
-		song_list = new JTextArea();
-		song_list.setText("");
-		scrollPane.setViewportView(song_list);
+		songl = new JTextArea();
+		songl.setText("");
+		scrollPane.setViewportView(songl);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
 		scrollPane_1.setBounds(6, 206, 328, 66);
@@ -146,7 +161,7 @@ public class YTD {
 
 	}
 
-	public boolean download_video(WebDriver driver, WebDriverWait wait, String s) {
+	public boolean dd(WebDriver driver, WebDriverWait wait, String s) {
 		boolean found = false;
 
 		driver.navigate().to("https://www.youtube.com/");
@@ -185,9 +200,11 @@ public class YTD {
 						.getAttribute("href");
 
 				Desktop.getDesktop().browse(new URI(url));
-
+				
 				found = true;
 				textArea.setText(textArea.getText() + " \n" + "found " + url);
+				
+				//fileDownload(url,"/Users/salehahmed/Downloads");
 
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
@@ -211,8 +228,7 @@ public class YTD {
 			byte[] buf;
 			int ByteRead, ByteWritten = 0;
 			Url = new URL(fAddress);
-			outStream = new BufferedOutputStream(
-					new FileOutputStream(destinationDir + "\\" + localFileName.substring(0, 3)));
+			outStream = new BufferedOutputStream(new FileOutputStream(destinationDir + "\\" + localFileName.substring(0, 3)));
 
 			uCon = Url.openConnection();
 			is = uCon.getInputStream();
@@ -248,5 +264,7 @@ public class YTD {
 			System.err.println("path or file name.");
 		}
 	}
+
+
 
 }
